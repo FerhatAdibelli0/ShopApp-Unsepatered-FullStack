@@ -1,5 +1,4 @@
 const fs = require("fs");
-
 const requestHandler = (req, res) => {
   const method = req.method;
   if (req.url === "/") {
@@ -16,7 +15,6 @@ const requestHandler = (req, res) => {
     req.on("data", (chunk) => {
       body.push(chunk);
     });
-
     return req.on("end", () => {
       const parsedBody = Buffer.concat(body).toString();
       const message = parsedBody.split("=")[1];

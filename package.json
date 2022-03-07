@@ -1,0 +1,23 @@
+{
+  "name": "1-nodejs-complete-guide",
+  "version": "1.0.0",
+  "description": "NodeJs-Complete-Guide",
+  "main": "App.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon App.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/FerhatAdibelli0/FerhatAdibelli0.git"
+  },
+  "author": "FerhatAdibelli",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/FerhatAdibelli0/FerhatAdibelli0/issues"
+  },
+  "homepage": "https://github.com/FerhatAdibelli0/FerhatAdibelli0#readme",
+  "devDependencies": {
+    "nodemon": "^2.0.15"
+  }
+}
