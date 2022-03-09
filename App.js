@@ -1,21 +1,13 @@
-
 const express = require("express");
 const app = express();
+const bodyParser = require("body-parser");
+const adminRoutes = require("./routes/admin");
+const shopRoutes = require("./routes/shop");
 
-app.use("/", (req, res, next) => {
-  console.log("starting");
-  next();
-});
-
-app.use("/add-product", (req, res, next) => {
-  console.log("This is product");
-  res.send("<h1>Adding product item</h1>");
-});
-
-app.use("/", (req, res, next) => {
-  console.log("This is main");
-  res.send("<h1>Welcome Express Js!!</h1>");
-});
+app.use(bodyParser.urlencoded({ extended: false }));
+// if you use get,post and so on in routes no matter order is here
+app.use(adminRoutes);
+app.use(shopRoutes);
 
 app.listen(3000);
 
