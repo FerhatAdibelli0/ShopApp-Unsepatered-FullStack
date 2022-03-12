@@ -5,8 +5,7 @@ const rootPath = require("../util/path");
 const adminData = require("./admin");
 
 routes.get("/", (req, res, next) => {
-  console.log(adminData.products);
-  res.sendFile(path.join(rootPath, "views", "shop.html"));
+  res.render("shop");
 });
 
 module.exports = routes;

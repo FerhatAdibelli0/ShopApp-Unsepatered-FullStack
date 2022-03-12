@@ -10,6 +10,9 @@ app.use(bodyParser.urlencoded({ extended: false }));
 
 // Static file for css sheet
 app.use(express.static(path.join(__dirname, "public")));
+// Templating Engine
+app.set("view engine", "pug");
+app.set("views", "views");
 
 // if you use get,post and so on in routes no matter order is here
 app.use("/admin/", adminData.routes);
