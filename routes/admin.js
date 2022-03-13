@@ -5,7 +5,10 @@ const rootPath = require("../util/path");
 
 //   /admin/add-product =>GET
 routes.get("/add-product", (req, res, next) => {
-  res.render("add-product", { changedTitle: "AddProduct" });
+  res.render("add-product", {
+    changedTitle: "AddProduct",
+    path:"admin/add-product",
+  });
 });
 //   /admin/add-product =>POST
 const products = [];
