@@ -10,6 +10,10 @@ routes.get("/", (req, res, next) => {
     prods: products,
     changedTitle: "Shoplist",
     path: "/",
+    hasProduct: products.length > 0,
+    productCss: true,
+    shopActive: true,
+    //layout:false // İt wouldnt apply default layout
   });
 });
 

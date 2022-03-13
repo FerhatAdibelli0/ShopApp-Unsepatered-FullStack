@@ -7,7 +7,10 @@ const rootPath = require("../util/path");
 routes.get("/add-product", (req, res, next) => {
   res.render("add-product", {
     changedTitle: "AddProduct",
-    path:"admin/add-product",
+    path: "admin/add-product",
+    formCss: true,
+    productCss: true,
+    productActive: true,
   });
 });
 //   /admin/add-product =>POST
