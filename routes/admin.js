@@ -3,10 +3,9 @@ const routes = express.Router();
 const path = require("path");
 const rootPath = require("../util/path");
 
-
 //   /admin/add-product =>GET
 routes.get("/add-product", (req, res, next) => {
-  res.sendFile(path.join(rootPath, "views", "add-product.html"));
+  res.render("add-product", { changedTitle: "AddProduct" });
 });
 //   /admin/add-product =>POST
 const products = [];
