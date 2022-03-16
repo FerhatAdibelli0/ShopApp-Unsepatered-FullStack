@@ -6,7 +6,6 @@ const shopRoutes = require("./routes/shop");
 const path = require("path");
 //const handleBrs = require("express-handlebars");
 
-
 // Parsing body
 app.use(bodyParser.urlencoded({ extended: false }));
 
@@ -22,7 +21,7 @@ app.use(express.static(path.join(__dirname, "public")));
 //     extname: "handlebars",
 //   })
 // );
-app.set("view engine","ejs");
+app.set("view engine", "ejs");
 //app.set("view engine", "pug"); // with PUG Engine
 //app.set("view engine", "handlebars"); // with handlebars
 app.set("view engine", "ejs");
@@ -34,7 +33,7 @@ app.use("/admin/", adminData.routes);
 app.use(shopRoutes);
 
 app.use("/", (req, res, next) => {
-  res.status(404).render("404", { changedTitle: "Error" });
+  res.status(404).render("404", { changedTitle: "Error", path: "" });
 });
 
 app.listen(3000);
