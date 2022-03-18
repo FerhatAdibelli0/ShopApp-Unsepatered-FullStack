@@ -1,15 +1,16 @@
 const Product = require("../models/product");
 
 exports.allGetProduct = (req, res, next) => {
-  const products = Product.fetchAll();
-  res.render("shop", {
-    prods: products,
-    changedTitle: "Shoplist",
-    path: "/",
-    hasProduct: products.length > 0,
-    productCss: true,
-    shopActive: true,
-    //layout:false // İt wouldnt apply default layout
+  Product.fetchAll((products) => {
+    res.render("shop", {
+      prods: products,
+      changedTitle: "Shoplist",
+      path: "/",
+      hasProduct: products.length > 0,
+      productCss: true,
+      shopActive: true,
+      //layout:false // İt wouldnt apply default layout
+    });
   });
 };
 
