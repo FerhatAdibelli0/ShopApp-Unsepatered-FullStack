@@ -1,9 +1,10 @@
 const express = require("express");
 const app = express();
 const bodyParser = require("body-parser");
-const adminData = require("./routes/admin");
+const adminRoutes = require("./routes/admin");
 const shopRoutes = require("./routes/shop");
 const path = require("path");
+const productController = require("./controller/product");
 //const handleBrs = require("express-handlebars");
 
 // Parsing body
@@ -29,12 +30,10 @@ app.set("views", "views");
 
 // if you use get,post and so on in routes no matter order is here
 
-app.use("/admin/", adminData.routes);
+app.use("/admin/", adminRoutes.routes);
 app.use(shopRoutes);
 
-app.use("/", (req, res, next) => {
-  res.status(404).render("404", { changedTitle: "Error", path: "" });
-});
+app.use("/", productController.error);
 
 app.listen(3000);
 
