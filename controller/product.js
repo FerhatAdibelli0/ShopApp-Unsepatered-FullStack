@@ -1,6 +1,7 @@
-const products = [];
+const Product = require("../models/product");
 
 exports.allGetProduct = (req, res, next) => {
+  const products = Product.fetchAll();
   res.render("shop", {
     prods: products,
     changedTitle: "Shoplist",
@@ -13,7 +14,8 @@ exports.allGetProduct = (req, res, next) => {
 };
 
 exports.postProduct = (req, res, next) => {
-  products.push({ title: req.body.title });
+  const product = new Product(req.body.title);
+  product.save();
   res.redirect("/");
 };
 
@@ -25,8 +27,4 @@ exports.getAddProduct = (req, res, next) => {
     productCss: true,
     productActive: true,
   });
-};
-
-exports.error = (req, res, next) => {
-  res.status(404).render("404", { changedTitle: "Error", path: "" });
 };
