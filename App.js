@@ -4,7 +4,7 @@ const bodyParser = require("body-parser");
 const adminRoutes = require("./routes/admin");
 const shopRoutes = require("./routes/shop");
 const path = require("path");
-const productController = require("./controller/product");
+const errorController = require("./controller/error");
 //const handleBrs = require("express-handlebars");
 
 // Parsing body
@@ -22,10 +22,10 @@ app.use(express.static(path.join(__dirname, "public")));
 //     extname: "handlebars",
 //   })
 // );
+
 app.set("view engine", "ejs");
 //app.set("view engine", "pug"); // with PUG Engine
 //app.set("view engine", "handlebars"); // with handlebars
-app.set("view engine", "ejs");
 app.set("views", "views");
 
 // if you use get,post and so on in routes no matter order is here
@@ -33,7 +33,7 @@ app.set("views", "views");
 app.use("/admin/", adminRoutes.routes);
 app.use(shopRoutes);
 
-app.use("/", productController.error);
+app.use("/", errorController.error);
 
 app.listen(3000);
 
