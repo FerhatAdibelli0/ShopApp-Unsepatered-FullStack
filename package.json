@@ -1,26 +1,23 @@
 {
-  "name": "1-nodejs-complete-guide",
+  "name": "nodejs-complete-guide",
   "version": "1.0.0",
-  "description": "NodeJs-Complete-Guide",
-  "main": "App.js",
+  "description": "Complete Node.js Guide",
+  "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon App.js"
+    "start": "nodemon app.js",
+    "start-server": "node app.js"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/FerhatAdibelli0/FerhatAdibelli0.git"
-  },
-  "author": "FerhatAdibelli",
+  "author": "Maximilian Schwarzmüller",
   "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/FerhatAdibelli0/FerhatAdibelli0/issues"
-  },
-  "homepage": "https://github.com/FerhatAdibelli0/FerhatAdibelli0#readme",
   "devDependencies": {
-    "nodemon": "^2.0.15"
+    "nodemon": "^1.18.3"
   },
   "dependencies": {
-    "express": "^4.17.3"
+    "body-parser": "^1.18.3",
+    "ejs": "^2.6.1",
+    "express": "^4.17.3",
+    "express-handlebars": "^3.0.0",
+    "pug": "^2.0.3"
   }
 }

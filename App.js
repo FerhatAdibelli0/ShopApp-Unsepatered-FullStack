@@ -1,41 +1,24 @@
-const express = require("express");
+const path = require('path');
+
+const express = require('express');
+const bodyParser = require('body-parser');
+
+const errorController = require('./controllers/error');
+
 const app = express();
-const bodyParser = require("body-parser");
-const adminRoutes = require("./routes/admin");
-const shopRoutes = require("./routes/shop");
-const path = require("path");
-const errorController = require("./controller/error");
-//const handleBrs = require("express-handlebars");
 
-// Parsing body
+app.set('view engine', 'ejs');
+app.set('views', 'views');
+
+const adminRoutes = require('./routes/admin');
+const shopRoutes = require('./routes/shop');
+
 app.use(bodyParser.urlencoded({ extended: false }));
+app.use(express.static(path.join(__dirname, 'public')));
 
-// Static file for css sheet
-app.use(express.static(path.join(__dirname, "public")));
-// Templating Engine
-
-// app.engine(
-//   "handlebars",
-//   handleBrs({
-//     layoutsDir: "views/layout",
-//     defaultLayout: "main-layout",
-//     extname: "handlebars",
-//   })
-// );
-
-app.set("view engine", "ejs");
-//app.set("view engine", "pug"); // with PUG Engine
-//app.set("view engine", "handlebars"); // with handlebars
-app.set("views", "views");
-
-// if you use get,post and so on in routes no matter order is here
-
-app.use("/admin/", adminRoutes.routes);
+app.use('/admin', adminRoutes);
 app.use(shopRoutes);
 
-app.use("/", errorController.error);
+app.use(errorController.get404);
 
 app.listen(3000);
-
-// const server = http.createServer(app);
-// server.listen(3000);
