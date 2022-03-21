@@ -6,9 +6,10 @@ const adminController = require("../controller/admin");
 routes.get("/add-product", adminController.getAddProduct);
 //   /admin/add-product =>POST
 
+routes.get("/products", adminController.getProducts);
+
 routes.post("/add-product", adminController.postProduct);
 
-routes.get("/products", adminController.getProducts);
 
 //module.exports = routes;
 exports.routes = routes;
