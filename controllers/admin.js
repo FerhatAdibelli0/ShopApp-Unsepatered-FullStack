@@ -26,9 +26,19 @@ exports.getEditProduct = (req, res, next) => {
 
 exports.postEditProduct = (req, res, next) => {
   const prodId = req.body.productId;
-  Product.findbyId(prodId,product=>{
-    
-  });
+  const updatedTitle = req.body.title;
+  const updatedImage = req.body.imageUrl;
+  const updatedPrice = req.body.price;
+  const updatedDesc = req.body.description;
+  const updatedProduct = new Product(
+    prodId,
+    updatedTitle,
+    updatedImage,
+    updatedDesc,
+    updatedPrice
+  );
+  updatedProduct.save();
+  res.redirect("/admin/products");
 };
 
 exports.postAddProduct = (req, res, next) => {

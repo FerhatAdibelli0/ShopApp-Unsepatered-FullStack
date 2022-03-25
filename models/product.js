@@ -29,7 +29,7 @@ module.exports = class Product {
   save() {
     getProductsFromFile((products) => {
       if (this.id) {
-        const updatedIndex = products.findIndex(prod.id === this.id);
+        const updatedIndex = products.findIndex(prod=>prod.id === this.id);
         let updatedProducts = [...products];
         updatedProducts[updatedIndex] = this;
         fs.writeFile(p, JSON.stringify(updatedProducts), (err) => {
