@@ -1,7 +1,7 @@
 // const fs = require("fs");
 // const path = require("path");
 const Cart = require("./cart");
-const db=require("../util/database");
+const db = require("../util/database");
 
 // const p = path.join(
 //   path.dirname(require.main.filename),
@@ -47,12 +47,15 @@ module.exports = class Product {
     //     });
     //   }
     // });
+    return db.execute(
+      "INSERT INTO products (title,price,description,imageUrl) VALUES (?,?,?,?)",
+      [this.title, this.price, this.description, this.imageUrl]
+    );
   }
 
   static fetchAll() {
     // getProductsFromFile(cb);
-    return db.execute("SELECT * FROM products")
-
+    return db.execute("SELECT * FROM products");
   }
 
   static deleteById(id) {
