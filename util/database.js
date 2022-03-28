@@ -15,3 +15,7 @@ const sequelize=new Sequelize("node-complete","root","Mysql+35",{
 });
 
 module.exports=sequelize;
+
+
+
+
