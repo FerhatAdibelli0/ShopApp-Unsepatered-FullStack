@@ -47,15 +47,27 @@ exports.postAddProduct = (req, res, next) => {
   const price = req.body.price;
   const description = req.body.description;
   const id = null;
-  const product = new Product(id, title, imageUrl, description, price);
-  product
-    .save()
+  Product.create({
+    title: title,
+    price: price,
+    imageUrl: imageUrl,
+    description: description,
+  })
     .then(() => {
-      res.redirect("/");
+      console.log("product created");
     })
     .catch((err) => {
       console.log(err);
     });
+  // const product = new Product(id, title, imageUrl, description, price);
+  // product
+  //   .save()
+  //   .then(() => {
+  //     res.redirect("/");
+  //   })
+  //   .catch((err) => {
+  //     console.log(err);
+  //   });
 };
 
 exports.postDeleteProduct = (req, res, next) => {
