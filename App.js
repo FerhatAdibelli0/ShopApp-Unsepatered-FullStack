@@ -22,6 +22,7 @@ app.use((req, res, next) => {
   User.findByPk(1)
     .then((user) => {
       req.user = user;
+      next()
     })
     .catch((err) => {
       console.log(err);
@@ -49,8 +50,8 @@ sequelize
     return user;
   })
   .then((user) => {
-    console.log(user);
     app.listen(3000);
+    console.log(user);
   })
   .catch((err) => {
     console.log(err);
