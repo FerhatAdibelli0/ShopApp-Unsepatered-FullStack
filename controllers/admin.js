@@ -34,8 +34,11 @@ exports.postEditProduct = (req, res, next) => {
   const updatedImage = req.body.imageUrl;
   const updatedPrice = req.body.price;
   const updatedDesc = req.body.description;
-  Product.findByPk(prodId)
-    .then((product) => {
+  req.user
+    .getProducts({ where: { id: prodId } })
+    //Product.findByPk(prodId)
+    .then((products) => {
+      const product = products[0];
       (product.title = updatedTitle),
         (product.price = updatedPrice),
         (product.imageUrl = updatedImage),
@@ -65,7 +68,13 @@ exports.postAddProduct = (req, res, next) => {
   const price = req.body.price;
   const description = req.body.description;
   const id = null;
-  // Magic Association Method
+  // Magic Association
+  // Product.create({
+  //   title: title,
+  //   price: price,
+  //   imageUrl: imageUrl,
+  //   description: description,
+  // });
   req.user
     .createProduct({
       title: title,
@@ -106,7 +115,7 @@ exports.postDeleteProduct = (req, res, next) => {
 };
 
 exports.getProducts = (req, res, next) => {
-  Product.findAll()
+  req.user.getProducts()
     .then((products) => {
       res.render("admin/products", {
         prods: products,
