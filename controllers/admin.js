@@ -82,7 +82,6 @@ exports.postAddProduct = (req, res, next) => {
       description: description,
     })
     .then(() => {
-      console.log("product created");
       res.redirect("/admin/products");
     })
     .catch((err) => {
@@ -114,7 +113,8 @@ exports.postDeleteProduct = (req, res, next) => {
 };
 
 exports.getProducts = (req, res, next) => {
-  req.user.getProducts()
+  req.user
+    .getProducts()
     .then((products) => {
       res.render("admin/products", {
         prods: products,

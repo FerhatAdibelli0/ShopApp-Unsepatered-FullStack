@@ -18,7 +18,6 @@ exports.getProducts = (req, res, next) => {
 
 exports.getProduct = (req, res, next) => {
   const paramId = req.params.productId;
-
   // Product.findAll({ where: { id: paramId } })
   //   .then((product) => {
   //     res.render("shop/product-detail", {
@@ -59,7 +58,6 @@ exports.getIndex = (req, res, next) => {
 };
 
 exports.getCart = (req, res, next) => {
-  console.log(req.user.cart);
   req.user
     .getCart()
     .then((cart) => {
@@ -103,16 +101,32 @@ exports.getCart = (req, res, next) => {
 
 exports.deleteCartProduct = (req, res, next) => {
   const prodId = req.body.productId;
-  Product.findbyId(prodId, (product) => {
-    Cart.deleteProduct(prodId, product.price);
-    res.redirect("/cart");
-  });
+  req.user
+    .getCart()
+    .then((cart) => {
+      return cart
+        .getProducts({ where: { id: prodId } })
+        .then((products) => {
+          let product = products[0];
+          product.cartItem.destroy();
+        })
+        .then((result) => {
+          res.redirect("/cart");
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    })
+    .catch((err) => {
+      console.log(err);
+    });
 };
 
 exports.postCart = (req, res, next) => {
   const prodId = req.body.productId;
   let fetchedCart;
   let newQunatity = 1;
+
   req.user
     .getCart()
     .then((cart) => {
