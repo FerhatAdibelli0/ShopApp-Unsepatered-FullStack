@@ -1,6 +1,5 @@
 const { redirect } = require("express/lib/response");
 const Product = require("../models/product");
-const Cart = require("../models/cart");
 
 exports.getProducts = (req, res, next) => {
   Product.findAll()
@@ -165,6 +164,38 @@ exports.postCart = (req, res, next) => {
   //   Cart.addToCart(prodId, product.price);
   // });
   // res.redirect("/");
+};
+
+exports.orderCart = (req, res, next) => {
+  req.user
+    .getCart()
+    .then((cart) => {
+      return cart
+        .getProducts()
+        .then((products) => {
+          return req.user
+            .createOrder()
+            .then((order) => {
+              return order.addProducts(
+                products.map((product) => {
+                  product.orderItem = {
+                    quantity: product.cartItem.quantity,
+                  };
+                  return product;
+                })
+              );
+            })
+            .catch((err) => {
+              console.log(err);
+            });
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    })
+    .catch((err) => {
+      console.log(err);
+    });
 };
 
 exports.getOrders = (req, res, next) => {
