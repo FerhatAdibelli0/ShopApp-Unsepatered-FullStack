@@ -31,26 +31,38 @@ exports.getIndex = (req, res, next) => {
 
 exports.getProduct = (req, res, next) => {
   const paramId = req.params.productId;
-  // Product.findAll({ where: { id: paramId } })
-  //   .then((product) => {
-  //     res.render("shop/product-detail", {
-  //       product: product[0],
-  //       path: "/products",
-  //       pageTitle: product[0].title,
-  //     });
-  //   })
-  //   .catch((err) => {
-  //     console.log(err);
-  //   });
+  Product.findByPk(paramId)
+    .then((product) => {
+      console.log(product);
+      res.render("shop/product-detail", {
+        product: product,
+        path: "/products",
+        pageTitle: product.title,
+      });
+    })
+    .catch((err) => {
+      console.log(err);
+    });
 
   // WİTH SEQUELİZE
-
   // Product.findByPk(paramId)
   //   .then((product) => {
   //     res.render("shop/product-detail", {
   //       product: product,
   //       path: "/products",
   //       pageTitle: product.title,
+  //     });
+  //   })
+  //   .catch((err) => {
+  //     console.log(err);
+  //   });
+
+  // Product.findAll({ where: { id: paramId } })
+  //   .then((product) => {
+  //     res.render("shop/product-detail", {
+  //       product: product[0],
+  //       path: "/products",
+  //       pageTitle: product[0].title,
   //     });
   //   })
   //   .catch((err) => {

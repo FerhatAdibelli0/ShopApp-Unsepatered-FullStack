@@ -1,4 +1,5 @@
 const getDb = require("../util/database").getDb;
+const mongoDb = require("mongodb");
 
 class Product {
   constructor(title, price, imageUrl, description) {
@@ -29,6 +30,20 @@ class Product {
       .toArray()
       .then((products) => {
         return products;
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
+
+  static findByPk(paramId) {
+    const db = getDb();
+    return db
+      .collection("products")
+      .find({ _id: mongoDb.ObjectId(paramId) })
+      .next()
+      .then((product) => {
+        return product;
       })
       .catch((err) => {
         console.log(err);
