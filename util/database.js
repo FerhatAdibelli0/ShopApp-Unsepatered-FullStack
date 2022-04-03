@@ -18,6 +18,8 @@
 // });
 
 // module.exports = sequelize;
+
+
 let _db;
 
 const mongoConnect = (callback) => {
@@ -38,8 +40,8 @@ const mongoConnect = (callback) => {
 };
 
 const getDb = () => {
-  if (_id) {
-    return _id;
+  if (_db) {
+    return _db;
   }
   throw "Not found that database";
 };

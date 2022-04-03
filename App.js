@@ -8,11 +8,10 @@ const errorController = require("./controllers/error");
 // const Cart = require("./models/cart");
 // const CartItem = require("./models/cartItem");
 const adminRoutes = require("./routes/admin");
-// const shopRoutes = require("./routes/shop");
+const shopRoutes = require("./routes/shop");
 // const Order = require("./models/order");
 // const OrderItem = require("./models/orderItem");
-const mongoConnect = require("./util/database");
-
+const mongoConnect = require("./util/database").mongoConnect;
 
 const app = express();
 
@@ -24,21 +23,21 @@ app.use(express.static(path.join(__dirname, "public")));
 
 // MİDLEWARE FOR EMBED REQ.USER TO SQUELİZE OBJECT
 
-// app.use((req, res, next) => {
-//   User.findByPk(1)
-//     .then((user) => {
-//       req.user = user;
-//       next();
-//     })
-//     .catch((err) => {
-//       console.log(err);
-//     });
-// });
+app.use((req, res, next) => {
+  // User.findByPk(1)
+  //   .then((user) => {
+  //     req.user = user;
+  next();
+  //   })
+  //   .catch((err) => {
+  //     console.log(err);
+  //   });
+});
 
 //Routes
 
 app.use("/admin", adminRoutes);
-// app.use(shopRoutes);
+app.use(shopRoutes);
 app.use(errorController.get404);
 
 //Associations for MySQL
