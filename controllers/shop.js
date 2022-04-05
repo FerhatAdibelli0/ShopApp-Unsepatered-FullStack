@@ -33,7 +33,6 @@ exports.getProduct = (req, res, next) => {
   const paramId = req.params.productId;
   Product.findByPk(paramId)
     .then((product) => {
-      console.log(product);
       res.render("shop/product-detail", {
         product: product,
         path: "/products",

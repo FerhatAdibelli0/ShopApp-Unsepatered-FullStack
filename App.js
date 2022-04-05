@@ -12,6 +12,7 @@ const shopRoutes = require("./routes/shop");
 // const Order = require("./models/order");
 // const OrderItem = require("./models/orderItem");
 const mongoConnect = require("./util/database").mongoConnect;
+const User = require("./models/users");
 
 const app = express();
 
@@ -24,14 +25,14 @@ app.use(express.static(path.join(__dirname, "public")));
 // MİDLEWARE FOR EMBED REQ.USER TO SQUELİZE OBJECT
 
 app.use((req, res, next) => {
-  // User.findByPk(1)
-  //   .then((user) => {
-  //     req.user = user;
-  next();
-  //   })
-  //   .catch((err) => {
-  //     console.log(err);
-  //   });
+  User.findByPk("624c98e2ec754251fe3f0756")
+    .then((user) => {
+      req.user = user;
+      next();
+    })
+    .catch((err) => {
+      console.log(err);
+    });
 });
 
 //Routes
