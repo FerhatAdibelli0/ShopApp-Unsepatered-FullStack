@@ -25,7 +25,7 @@ class User {
 
     if (cartProductIndex >= 0) {
       newQuantity = updatedCartItems[cartProductIndex].quantity + 1;
-      updatedCartItems[cartProductIndex].quantity=newQuantity;
+      updatedCartItems[cartProductIndex].quantity = newQuantity;
     } else {
       updatedCartItems.push({
         productId: new ObjectId(product._id),
@@ -43,6 +43,27 @@ class User {
         { _id: new ObjectId(this._id) },
         { $set: { cart: updatedCart } }
       );
+  }
+
+  getCart() {
+    const db = getDb();
+    const prodId = this.cart.items.map((pd) => {
+      return pd.productId;
+    });
+    return db
+      .collection("products")
+      .find({ _id: { $in: prodId } })
+      .toArray()
+      .then((products) => {
+        return products.map((product) => {
+          return {
+            ...product,
+            quantity: this.cart.items.find((qun) => {
+              return qun.productId.toString() === product._id.toString();
+            }).quantity,
+          };
+        });
+      });
   }
 
   static findByPk(userId) {
