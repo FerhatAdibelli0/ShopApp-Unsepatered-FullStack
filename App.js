@@ -2,17 +2,19 @@ const path = require("path");
 const express = require("express");
 const bodyParser = require("body-parser");
 const errorController = require("./controllers/error");
+const adminRoutes = require("./routes/admin");
+const shopRoutes = require("./routes/shop");
+// const mongoConnect = require("./util/database").mongoConnect;
+// const User = require("./models/users");
+const mongoose = require("mongoose");
+
 // const sequelize = require("./util/database");
 // const Product = require("./models/product");
 // const User = require("./models/users");
 // const Cart = require("./models/cart");
 // const CartItem = require("./models/cartItem");
-const adminRoutes = require("./routes/admin");
-const shopRoutes = require("./routes/shop");
 // const Order = require("./models/order");
 // const OrderItem = require("./models/orderItem");
-const mongoConnect = require("./util/database").mongoConnect;
-const User = require("./models/users");
 
 const app = express();
 
@@ -24,16 +26,16 @@ app.use(express.static(path.join(__dirname, "public")));
 
 // MİDLEWARE FOR EMBED REQ.USER TO SQUELİZE OBJECT
 
-app.use((req, res, next) => {
-  User.findByPk("6251b88335a5ed0883440a1f")
-    .then((user) => {
-      req.user = new User(user.name, user.email, user.cart, user._id);
-      next();
-    })
-    .catch((err) => {
-      console.log(err);
-    });
-});
+// app.use((req, res, next) => {
+//   User.findByPk("6251b88335a5ed0883440a1f")
+//     .then((user) => {
+//       req.user = new User(user.name, user.email, user.cart, user._id);
+//       next();
+//     })
+//     .catch((err) => {
+//       console.log(err);
+//     });
+// });
 
 //Routes
 
@@ -78,6 +80,20 @@ app.use(errorController.get404);
 //   console.log(err);
 // });
 
-mongoConnect(() => {
-  app.listen(3000);
-});
+// MongoDb Driver
+
+// mongoConnect(() => {
+//   app.listen(3000);
+// });
+
+mongoose
+  .connect(
+    "mongodb+srv://maxpayne35:qGBr7naSXYmEYnw@cluster0.sp51h.mongodb.net/shop?retryWrites=true&w=majority"
+  )
+  .then((result) => {
+    app.listen(3000);
+    console.log("Connected with mongoose");
+  })
+  .catch((err) => {
+    console.log(err);
+  });

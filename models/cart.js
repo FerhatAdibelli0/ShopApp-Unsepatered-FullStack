@@ -1,16 +1,16 @@
-const Sequelize = require("sequelize");
-const sequalize = require("../util/database");
+// const Sequelize = require("sequelize");
+// const sequalize = require("../util/database");
 
-const Cart = sequalize.define("cart", {
-  id: {
-    type: Sequelize.INTEGER,
-    allowNull: false,
-    autoIncrement: true,
-    primaryKey: true,
-  },
-});
+// const Cart = sequalize.define("cart", {
+//   id: {
+//     type: Sequelize.INTEGER,
+//     allowNull: false,
+//     autoIncrement: true,
+//     primaryKey: true,
+//   },
+// });
 
-module.exports = Cart;
+// module.exports = Cart;
 
 // const fs = require("fs");
 // const path = require("path");

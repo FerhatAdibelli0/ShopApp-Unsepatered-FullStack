@@ -19,32 +19,32 @@
 
 // module.exports = sequelize;
 
+// CONNECTED WİTH MONGODB DRİVER
 
-let _db;
+// let _db;
 
-const mongoConnect = (callback) => {
-  const mongodb = require("mongodb");
-  const MongoClient = mongodb.MongoClient;
-  MongoClient.connect(
-    "mongodb+srv://maxpayne35:qGBr7naSXYmEYnw@cluster0.sp51h.mongodb.net/shop?retryWrites=true&w=majority"
-  )
-    .then((client) => {
-      console.log("CONNECTED");
-      _db = client.db();
-      callback();
-    })
-    .catch((err) => {
-      console.log(err);
-      throw err;
-    });
-};
+// const mongoConnect = () => {
+//   const mongodb = require("mongodb");
+//   const MongoClient = mongodb.MongoClient;
+//   MongoClient.connect(
+//     "mongodb+srv://maxpayne35:qGBr7naSXYmEYnw@cluster0.sp51h.mongodb.net/shop?retryWrites=true&w=majority"
+//   )
+//     .then((client) => {
+//       console.log("CONNECTED");
+//       _db = client.db();
+//     })
+//     .catch((err) => {
+//       console.log(err);
+//       throw err;
+//     });
+// };
 
-const getDb = () => {
-  if (_db) {
-    return _db;
-  }
-  throw "Not found that database";
-};
+// const getDb = () => {
+//   if (_db) {
+//     return _db;
+//   }
+//   throw "Not found that database";
+// };
 
-exports.mongoConnect = mongoConnect;
-exports.getDb = getDb;
+// exports.mongoConnect = mongoConnect;
+// exports.getDb = getDb;

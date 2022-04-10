@@ -13,8 +13,8 @@ exports.postAddProduct = (req, res, next) => {
   const price = req.body.price;
   const imageUrl = req.body.imageUrl;
   const description = req.body.description;
-  //const id = null;
 
+  //const id = null;
   // Magic Association
   // Product.create({
   //   title: title,
@@ -31,17 +31,18 @@ exports.postAddProduct = (req, res, next) => {
   //     imageUrl: imageUrl,
   //     description: description,
   //   })
-  const product = new Product(
-    title,
-    price,
-    imageUrl,
-    description,
-    null,
-    req.user._id
-  );
+
+  const product = new Product({
+    title: title,
+    price: price,
+    image: imageUrl,
+    description: description,
+  });
+
   product
     .save()
     .then(() => {
+      console.log("Created Product");
       res.redirect("/admin/products");
     })
     .catch((err) => {
