@@ -25,7 +25,7 @@ app.use(express.static(path.join(__dirname, "public")));
 // MİDLEWARE FOR EMBED REQ.USER TO SQUELİZE OBJECT
 
 app.use((req, res, next) => {
-  User.findByPk("624c98e2ec754251fe3f0756")
+  User.findByPk("6251b88335a5ed0883440a1f")
     .then((user) => {
       req.user = new User(user.name, user.email, user.cart, user._id);
       next();
