@@ -17,7 +17,6 @@ exports.getProducts = (req, res, next) => {
 };
 
 exports.getIndex = (req, res, next) => {
-  console.log(req.user);
   Product.find()
     .then((products) => {
       res.render("shop/index", {
