@@ -1,6 +1,7 @@
 const { redirect } = require("express/lib/response");
 const Product = require("../models/product");
 const User = require("../models/users");
+const Order = require("../models/order");
 
 exports.getProducts = (req, res, next) => {
   Product.find()
@@ -177,11 +178,21 @@ exports.deleteCartProduct = (req, res, next) => {
 };
 
 exports.orderCart = (req, res, next) => {
-  // let fetchedCart;
   req.user
-    .addOrder()
+    .populate("cart.items.productId")
+    .then((user) => {
+      const products = user.cart.items.map((i) => {
+        return { quantity: i.quantity, product: i.productId._doc };
+      });
+
+      const order = new Order({
+        products: products,
+        user: { name: req.user.name, userId: req.user },
+      });
+      return order.save();
+    })
     .then((result) => {
-      res.redirect("/orders");
+      return req.user.clearCart();
       //   fetchedCart = cart;
       //   return cart
       //     .getProducts()
@@ -211,6 +222,9 @@ exports.orderCart = (req, res, next) => {
       //     .catch((err) => {
       //       console.log(err);
       //     });
+    })
+    .then(() => {
+      res.redirect("/orders");
     })
     .catch((err) => {
       console.log(err);
