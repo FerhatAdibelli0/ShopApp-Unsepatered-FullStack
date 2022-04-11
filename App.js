@@ -5,7 +5,7 @@ const errorController = require("./controllers/error");
 const adminRoutes = require("./routes/admin");
 const shopRoutes = require("./routes/shop");
 // const mongoConnect = require("./util/database").mongoConnect;
-// const User = require("./models/users");
+const User = require("./models/users");
 const mongoose = require("mongoose");
 
 // const sequelize = require("./util/database");
@@ -26,16 +26,16 @@ app.use(express.static(path.join(__dirname, "public")));
 
 // MİDLEWARE FOR EMBED REQ.USER TO SQUELİZE OBJECT
 
-// app.use((req, res, next) => {
-//   User.findByPk("6251b88335a5ed0883440a1f")
-//     .then((user) => {
-//       req.user = new User(user.name, user.email, user.cart, user._id);
-//       next();
-//     })
-//     .catch((err) => {
-//       console.log(err);
-//     });
-// });
+app.use((req, res, next) => {
+  User.findById("625457d437b7dd80595dcc81")
+    .then((user) => {
+      req.user = user;
+      next();
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+});
 
 //Routes
 
@@ -90,6 +90,18 @@ mongoose
   .connect(
     "mongodb+srv://maxpayne35:qGBr7naSXYmEYnw@cluster0.sp51h.mongodb.net/shop?retryWrites=true&w=majority"
   )
+  .then(() => {
+    User.findOne().then((result) => {
+      if (!result) {
+        const user = new User({
+          name: "ferhat",
+          email: "ferhat@hotmail.com",
+          cart: { items: [] },
+        });
+        user.save();
+      }
+    });
+  })
   .then((result) => {
     app.listen(3000);
     console.log("Connected with mongoose");
