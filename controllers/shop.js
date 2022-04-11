@@ -72,10 +72,12 @@ exports.getProduct = (req, res, next) => {
 
 exports.getCart = (req, res, next) => {
   req.user
-    .getCart()
-    .then((product) => {
+    .populate("cart.items.productId")
+    // .execPopulate()
+    .then((user) => {
+      const products = user.cart.items;
       res.render("shop/cart", {
-        products: product,
+        products: products,
         path: "/cart",
         pageTitle: "Your Cart",
       });
@@ -107,7 +109,7 @@ exports.getCart = (req, res, next) => {
 
 exports.postCart = (req, res, next) => {
   const prodId = req.body.productId;
-  Product.findByPk(prodId)
+  Product.findById(prodId)
     .then((product) => {
       return req.user.addToCart(product);
     })

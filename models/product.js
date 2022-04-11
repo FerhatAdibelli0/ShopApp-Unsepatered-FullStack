@@ -23,6 +23,8 @@ const productSchima = new Schema({
   },
 });
 
+
+
 module.exports = mongoose.model("Product", productSchima);
 
 // const getDb = require("../util/database").getDb;
