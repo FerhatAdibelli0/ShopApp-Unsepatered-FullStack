@@ -1,10 +1,15 @@
-const path = require("path");
 const express = require("express");
+
+const path = require("path");
 const bodyParser = require("body-parser");
+const session = require("express-session");
+
 const errorController = require("./controllers/error");
+
 const adminRoutes = require("./routes/admin");
 const shopRoutes = require("./routes/shop");
 const authRoutes = require("./routes/auth");
+
 // const mongoConnect = require("./util/database").mongoConnect;
 const User = require("./models/users");
 const mongoose = require("mongoose");
@@ -24,6 +29,9 @@ app.set("views", "views");
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, "public")));
+app.use(
+  session({ secret: "my secret", resave: false, saveUninitialized: false })
+);
 
 // MİDLEWARE FOR EMBED REQ.USER TO SQUELİZE OBJECT
 
