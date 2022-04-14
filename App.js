@@ -3,6 +3,7 @@ const express = require("express");
 const path = require("path");
 const bodyParser = require("body-parser");
 const session = require("express-session");
+const mongoDbSession = require("connect-mongodb-session")(session);
 
 const errorController = require("./controllers/error");
 
@@ -22,7 +23,14 @@ const mongoose = require("mongoose");
 // const Order = require("./models/order");
 // const OrderItem = require("./models/orderItem");
 
+const MONGO_URI =
+  "mongodb+srv://maxpayne35:qGBr7naSXYmEYnw@cluster0.sp51h.mongodb.net/shop?retryWrites=true&w=majority";
+
 const app = express();
+const store = new mongoDbSession({
+  uri: MONGO_URI,
+  collection: "sessions",
+});
 
 app.set("view engine", "ejs");
 app.set("views", "views");
@@ -30,21 +38,26 @@ app.set("views", "views");
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, "public")));
 app.use(
-  session({ secret: "my secret", resave: false, saveUninitialized: false })
+  session({
+    secret: "my secret",
+    resave: false,
+    saveUninitialized: false,
+    store: store,
+  })
 );
 
 // MİDLEWARE FOR EMBED REQ.USER TO SQUELİZE OBJECT
 
-app.use((req, res, next) => {
-  User.findById("625457d437b7dd80595dcc81")
-    .then((user) => {
-      req.user = user;
-      next();
-    })
-    .catch((err) => {
-      console.log(err);
-    });
-});
+// app.use((req, res, next) => {
+//   User.findById("625457d437b7dd80595dcc81")
+//     .then((user) => {
+//       req.user = user;
+//       next();
+//     })
+//     .catch((err) => {
+//       console.log(err);
+//     });
+// });
 
 //Routes
 
@@ -97,9 +110,7 @@ app.use(errorController.get404);
 // });
 
 mongoose
-  .connect(
-    "mongodb+srv://maxpayne35:qGBr7naSXYmEYnw@cluster0.sp51h.mongodb.net/shop?retryWrites=true&w=majority"
-  )
+  .connect(MONGO_URI)
   .then(() => {
     User.findOne().then((result) => {
       if (!result) {

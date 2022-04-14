@@ -42,6 +42,13 @@
           >Login</a
         >
       </li>
+      <form action="/logout" method="post">
+        <li class="main-header__item">
+          <button class="<%= path === '/login' ? 'active' : '' %>">
+            Logout
+          </button>
+        </li>
+      </form>
     </ul>
   </nav>
 </header>
