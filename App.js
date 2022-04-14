@@ -48,16 +48,20 @@ app.use(
 
 // MİDLEWARE FOR EMBED REQ.USER TO SQUELİZE OBJECT
 
-// app.use((req, res, next) => {
-//   User.findById("625457d437b7dd80595dcc81")
-//     .then((user) => {
-//       req.user = user;
-//       next();
-//     })
-//     .catch((err) => {
-//       console.log(err);
-//     });
-// });
+app.use((req, res, next) => {
+  if (!req.session.user) {
+    return next();
+  } else {
+    User.findById(req.session.user._id)
+      .then((user) => {
+        req.user = user;
+        next();
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
+});
 
 //Routes
 
