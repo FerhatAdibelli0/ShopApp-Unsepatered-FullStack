@@ -25,7 +25,8 @@ exports.getIndex = (req, res, next) => {
         prods: products,
         pageTitle: "Shop",
         path: "/",
-        isAuthenticated: req.session.isLoggedIn,
+        // isAuthenticated: req.session.isLoggedIn,
+        // csrfToken: req.csrfToken(),
       });
     })
     .catch((err) => {
@@ -191,7 +192,7 @@ exports.orderCart = (req, res, next) => {
 
       const order = new Order({
         products: products,
-        user: { name: req.user.name, userId: req.user },
+        user: { email: req.user.email, userId: req.user },
       });
       return order.save();
     })

@@ -4,6 +4,7 @@ const path = require("path");
 const bodyParser = require("body-parser");
 const session = require("express-session");
 const mongoDbSession = require("connect-mongodb-session")(session);
+const csrf = require("csurf");
 
 const errorController = require("./controllers/error");
 
@@ -14,6 +15,8 @@ const authRoutes = require("./routes/auth");
 // const mongoConnect = require("./util/database").mongoConnect;
 const User = require("./models/users");
 const mongoose = require("mongoose");
+// Creating csrf middleware
+const csrfProtection = csrf();
 
 // const sequelize = require("./util/database");
 // const Product = require("./models/product");
@@ -45,6 +48,8 @@ app.use(
     store: store,
   })
 );
+// İmportant to use it just after session
+app.use(csrfProtection);
 
 // MİDLEWARE FOR EMBED REQ.USER TO SQUELİZE OBJECT
 
@@ -61,6 +66,13 @@ app.use((req, res, next) => {
         console.log(err);
       });
   }
+});
+
+// Middleware for including every page rendering
+app.use((req, res, next) => {
+  res.locals.isAuthenticated = req.session.isLoggedIn;
+  res.locals.csrfToken = req.csrfToken();
+  next()
 });
 
 //Routes
