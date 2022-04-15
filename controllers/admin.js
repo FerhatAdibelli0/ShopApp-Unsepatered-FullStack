@@ -1,6 +1,10 @@
 const Product = require("../models/product");
 
 exports.getAddProduct = (req, res, next) => {
+  // PROTECTED ROUTES BUT THAT IS CUMBERSOME,USE MİDDLEWARE
+  // if (!req.session.isAuthenticated) {
+  //   return res.redirect("/login");
+  // }
   res.render("admin/edit-product", {
     pageTitle: "Add Product",
     path: "/admin/add-product",
