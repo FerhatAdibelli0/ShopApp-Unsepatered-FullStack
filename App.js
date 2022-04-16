@@ -5,6 +5,7 @@ const bodyParser = require("body-parser");
 const session = require("express-session");
 const mongoDbSession = require("connect-mongodb-session")(session);
 const csrf = require("csurf");
+const flash = require("connect-flash");
 
 const errorController = require("./controllers/error");
 
@@ -50,6 +51,7 @@ app.use(
 );
 // İmportant to use it just after session
 app.use(csrfProtection);
+app.use(flash());
 
 // MİDLEWARE FOR EMBED REQ.USER TO SQUELİZE OBJECT
 
@@ -72,7 +74,7 @@ app.use((req, res, next) => {
 app.use((req, res, next) => {
   res.locals.isAuthenticated = req.session.isLoggedIn;
   res.locals.csrfToken = req.csrfToken();
-  next()
+  next();
 });
 
 //Routes
