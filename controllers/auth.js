@@ -42,34 +42,24 @@ exports.postSignup = (req, res, next) => {
       errorMessage: errors.array()[0].msg,
     });
   }
-  User.findOne({ email: email })
-    .then((userDoc) => {
-      if (userDoc) {
-        req.flash("error", "E-mail exist already!");
-        return res.redirect("/signup");
-      }
-      return Bcryptjs.hash(password, 12)
-        .then((hashedPassword) => {
-          const user = new User({
-            email: email,
-            password: hashedPassword,
-            cart: { items: [] },
-          });
-          return user.save();
-        })
-        .then((result) => {
-          res.redirect("/login");
-          return transport
-            .sendMail({
-              from: "ferhatadibelli@software.com",
-              to: email,
-              subject: "Design Your Model S | Ferhat",
-              html: "<h1>Great! You are successful</h1><p>Get your <b>Car</b> today!</p>",
-            })
-            .catch((err) => {
-              console.log(err);
-            });
-        });
+
+  Bcryptjs.hash(password, 12)
+    .then((hashedPassword) => {
+      const user = new User({
+        email: email,
+        password: hashedPassword,
+        cart: { items: [] },
+      });
+      return user.save();
+    })
+    .then((result) => {
+      res.redirect("/login");
+      return transport.sendMail({
+        from: "ferhatadibelli@software.com",
+        to: email,
+        subject: "Design Your Model S | Ferhat",
+        html: "<h1>Great! You are successful</h1><p>Get your <b>Car</b> today!</p>",
+      });
     })
     .catch((err) => {
       console.log(err);
