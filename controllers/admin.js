@@ -94,15 +94,16 @@ exports.postEditProduct = (req, res, next) => {
 
   Product.findById(prodId)
     .then((product) => {
+      if (product.userId.toString() !== req.user._id.toString()) {
+        return res.redirect("/");
+      }
       product.title = updatedTitle;
       product.price = updatedPrice;
       product.imageUrl = updatedImage;
       product.description = updatedDesc;
-
-      product.save();
-    })
-    .then((result) => {
-      res.redirect("/admin/products");
+      return product.save().then((result) => {
+        res.redirect("/admin/products");
+      });
     })
     .catch((err) => {
       console.log(err);
@@ -137,7 +138,8 @@ exports.postEditProduct = (req, res, next) => {
 exports.postDeleteProduct = (req, res, next) => {
   const prodId = req.body.productId;
   // Product.findByPk(prodId)
-  Product.findByIdAndRemove(prodId)
+  // Product.findByIdAndRemove(prodId) this is also used in mongoDb
+  Product.deleteOne({ _id: prodId, userId: req.user._id })
     // .then((product) => {
     //   return product.destroy();
     // })
@@ -150,7 +152,7 @@ exports.postDeleteProduct = (req, res, next) => {
 };
 
 exports.getProducts = (req, res, next) => {
-  Product.find()
+  Product.find({ userId: req.user._id })
     // .select("title price -_id")
     // .populate("userId","email")
     .then((products) => {
