@@ -8,9 +8,18 @@ const router = express.Router();
 
 router.get("/login", authController.getLogin);
 
-router.post("/login", authController.postLogin);
-
 router.post("/logout", authController.postLogout);
+
+router.post(
+  "/login",
+  [
+    check("email").isEmail().withMessage("E-mail is not convenient for login"),
+    check("password", "Password is not convenient for login")
+      .isLength({ min: 5 })
+      .isAlphanumeric(),
+  ],
+  authController.postLogin
+);
 
 router.post(
   "/signup",
