@@ -89,6 +89,11 @@ exports.getLogin = (req, res, next) => {
     pageTitle: "Login",
     isAuthenticated: false,
     errorMessage: message,
+    errorValidation: [],
+    oldInput: {
+      email: "",
+      password: "",
+    },
   });
 };
 
@@ -98,19 +103,34 @@ exports.postLogin = (req, res, next) => {
   const errors = validationResult(req);
 
   if (!errors.isEmpty()) {
-    return res.status(422).render("auth/login", {
-      path: "/login",
-      pageTitle: "Login",
-      isAuthenticated: false,
-      errorMessage: errors.array()[0].msg,
-    });
+    // return res.status(422).render("auth/login", {
+    //   path: "/login",
+    //   pageTitle: "Login",
+    //   isAuthenticated: false,
+    //   errorMessage: errors.array()[0].msg,
+    //   errorValidation: errors.array(),
+    //   oldInput: {
+    //     email: email,
+    //     password: password,
+    //   },
+    // });
   }
 
   User.findOne({ email: email })
     .then((user) => {
       if (!user) {
-        req.flash("error", "invalid email or password"); // it is in session now
-        return res.redirect("/login");
+        // req.flash("error", "invalid email or password"); // it is in session now
+        return res.status(422).render("auth/login", {
+          path: "/login",
+          pageTitle: "Login",
+          isAuthenticated: false,
+          errorMessage: "invalid email or password",
+          errorValidation: [{ param: "email" }],
+          oldInput: {
+            email: email,
+            password: password,
+          },
+        });
       }
       Bcryptjs.compare(password, user.password)
         .then((doMatch) => {
@@ -121,8 +141,18 @@ exports.postLogin = (req, res, next) => {
               res.redirect("/");
             });
           }
-          req.flash("error", "invalid email or password");
-          return res.redirect("/login");
+          // req.flash("error", "invalid email or password");
+          return res.status(422).render("auth/login", {
+            path: "/login",
+            pageTitle: "Login",
+            isAuthenticated: false,
+            errorMessage: "invalid email or password",
+            errorValidation: [{ param: "password" }],
+            oldInput: {
+              email: email,
+              password: password,
+            },
+          });
         })
         .catch((err) => {
           console.log(err);
