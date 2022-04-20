@@ -1,5 +1,6 @@
 const Product = require("../models/product");
 const { validationResult } = require("express-validator");
+const mongooese = require("mongoose");
 
 exports.getAddProduct = (req, res, next) => {
   // PROTECTED ROUTES BUT THAT IS CUMBERSOME,USE MİDDLEWARE
@@ -22,10 +23,8 @@ exports.postAddProduct = (req, res, next) => {
   const price = req.body.price;
   const imageUrl = req.body.imageUrl;
   const description = req.body.description;
-
   const errors = validationResult(req);
 
-  console.log(req.user);
   if (!errors.isEmpty()) {
     return res.status(422).render("admin/edit-product", {
       pageTitle: "Add Product",
@@ -76,7 +75,11 @@ exports.postAddProduct = (req, res, next) => {
       res.redirect("/admin/products");
     })
     .catch((err) => {
-      console.log(err);
+      // console.log(err);
+      // return res.redirect("/500");
+      const error = new Error(err);
+      error.httpStatusCode = 500;
+      return next(error);
     });
 
   // const product = new Product(id, title, imageUrl, description, price);
@@ -109,7 +112,9 @@ exports.getEditProduct = (req, res, next) => {
       });
     })
     .catch((err) => {
-      console.log(err);
+      const error = new Error(err);
+      error = { ...error, httpStatusCode: 500 };
+      return next(error);
     });
 };
 
@@ -154,7 +159,9 @@ exports.postEditProduct = (req, res, next) => {
       });
     })
     .catch((err) => {
-      console.log(err);
+      const error = new Error(err);
+      error = { ...error, httpStatusCode: 500 };
+      return next(error);
     });
 
   //   Product.findByPk(prodId)
@@ -195,7 +202,9 @@ exports.postDeleteProduct = (req, res, next) => {
       res.redirect("/admin/products");
     })
     .catch((err) => {
-      console.log(err);
+      const error = new Error(err);
+      error = { ...error, httpStatusCode: 500 };
+      return next(error);
     });
 };
 
@@ -211,6 +220,8 @@ exports.getProducts = (req, res, next) => {
       });
     })
     .catch((err) => {
-      console.log(err);
+      const error = new Error(err);
+      error = { ...error, httpStatusCode: 500 };
+      return next(error);
     });
 };

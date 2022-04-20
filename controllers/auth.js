@@ -51,7 +51,9 @@ exports.postSignup = (req, res, next) => {
       });
     })
     .catch((err) => {
-      console.log(err);
+      const error = new Error(err);
+      error = { ...error, httpStatusCode: 500 };
+      return next(error);
     });
 };
 
@@ -100,7 +102,7 @@ exports.getLogin = (req, res, next) => {
 exports.postLogin = (req, res, next) => {
   const email = req.body.email;
   const password = req.body.password;
-  
+
   // const errors = validationResult(req);
 
   // if (!errors.isEmpty()) {
@@ -219,7 +221,9 @@ exports.postReset = (req, res, next) => {
           });
       })
       .catch((err) => {
-        console.log(err);
+        const error = new Error(err);
+        error = { ...error, httpStatusCode: 500 };
+        return next(error);
       });
   });
 };
@@ -262,7 +266,9 @@ exports.getNewPassword = (req, res, next) => {
       });
     })
     .catch((err) => {
-      console.log(err);
+      const error = new Error(err);
+      error = { ...error, httpStatusCode: 500 };
+      return next(error);
     });
 };
 
@@ -299,6 +305,8 @@ exports.postNewPassword = (req, res, next) => {
       });
     })
     .catch((err) => {
-      console.log(err);
+      const error = new Error(err);
+      error = { ...error, httpStatusCode: 500 };
+      return next(error);
     });
 };
