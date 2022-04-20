@@ -52,7 +52,6 @@ exports.postSignup = (req, res, next) => {
     })
     .catch((err) => {
       const error = new Error(err);
-      error = { ...error, httpStatusCode: 500 };
       return next(error);
     });
 };
@@ -222,7 +221,6 @@ exports.postReset = (req, res, next) => {
       })
       .catch((err) => {
         const error = new Error(err);
-        error = { ...error, httpStatusCode: 500 };
         return next(error);
       });
   });
@@ -267,7 +265,6 @@ exports.getNewPassword = (req, res, next) => {
     })
     .catch((err) => {
       const error = new Error(err);
-      error = { ...error, httpStatusCode: 500 };
       return next(error);
     });
 };
@@ -306,7 +303,6 @@ exports.postNewPassword = (req, res, next) => {
     })
     .catch((err) => {
       const error = new Error(err);
-      error = { ...error, httpStatusCode: 500 };
       return next(error);
     });
 };

@@ -55,7 +55,15 @@ app.use(flash());
 
 // MİDLEWARE FOR EMBED REQ.USER TO SQUELİZE OBJECT
 
+// Middleware for including every page rendering
 app.use((req, res, next) => {
+  res.locals.isAuthenticated = req.session.isLoggedIn;
+  res.locals.csrfToken = req.csrfToken();
+  next();
+});
+
+app.use((req, res, next) => {
+  // throw new Error("changed"); // if throw error in synch code Error middleware catch it but in async code it doesnt you should next(new Error(err))
   if (!req.session.user) {
     return next();
   } else {
@@ -69,16 +77,9 @@ app.use((req, res, next) => {
       })
       .catch((err) => {
         // console.log(err);
-        throw new Error(err);
+        next(new Error(err));
       });
   }
-});
-
-// Middleware for including every page rendering
-app.use((req, res, next) => {
-  res.locals.isAuthenticated = req.session.isLoggedIn;
-  res.locals.csrfToken = req.csrfToken();
-  next();
 });
 
 //Routes
@@ -91,11 +92,12 @@ app.get("/500", errorController.get500);
 app.use(errorController.get404);
 // ERROR MIDDLEWARE
 app.use((error, req, res, next) => {
-  // return res.status(500).render("500", {
-  //   pageTitle: "Error",
-  //   path: "/500",
-  // });
-  res.redirect("/500");
+  console.log(error);
+  return res.status(500).render("500", {
+    pageTitle: "Error",
+    path: "/500",
+  });
+  // res.redirect("/500");
 });
 
 //Associations for MySQL

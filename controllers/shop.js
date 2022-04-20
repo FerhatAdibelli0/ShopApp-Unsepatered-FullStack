@@ -14,7 +14,6 @@ exports.getProducts = (req, res, next) => {
     })
     .catch((err) => {
       const error = new Error(err);
-      error = { ...error, httpStatusCode: 500 };
       return next(error);
     });
 };
@@ -32,7 +31,6 @@ exports.getIndex = (req, res, next) => {
     })
     .catch((err) => {
       const error = new Error(err);
-      error = { ...error, httpStatusCode: 500 };
       return next(error);
     });
 };
@@ -49,7 +47,6 @@ exports.getProduct = (req, res, next) => {
     })
     .catch((err) => {
       const error = new Error(err);
-      error = { ...error, httpStatusCode: 500 };
       return next(error);
     });
 
@@ -93,7 +90,6 @@ exports.getCart = (req, res, next) => {
     })
     .catch((err) => {
       const error = new Error(err);
-      error = { ...error, httpStatusCode: 500 };
       return next(error);
     });
 
@@ -129,7 +125,6 @@ exports.postCart = (req, res, next) => {
     })
     .catch((err) => {
       const error = new Error(err);
-      error = { ...error, httpStatusCode: 500 };
       return next(error);
     });
 
@@ -186,7 +181,6 @@ exports.deleteCartProduct = (req, res, next) => {
     })
     .catch((err) => {
       const error = new Error(err);
-      error = { ...error, httpStatusCode: 500 };
       return next(error);
     });
 };
@@ -242,7 +236,6 @@ exports.orderCart = (req, res, next) => {
     })
     .catch((err) => {
       const error = new Error(err);
-      error = { ...error, httpStatusCode: 500 };
       return next(error);
     });
 };
@@ -258,7 +251,6 @@ exports.getOrders = (req, res, next) => {
     })
     .catch((err) => {
       const error = new Error(err);
-      error = { ...error, httpStatusCode: 500 };
       return next(error);
     });
 };
