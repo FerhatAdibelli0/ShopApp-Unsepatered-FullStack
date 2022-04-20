@@ -13,10 +13,14 @@ router.post("/logout", authController.postLogout);
 router.post(
   "/login",
   [
-    check("email").isEmail().withMessage("E-mail is not convenient for login"),
+    check("email")
+      .isEmail()
+      .withMessage("E-mail is not convenient for login")
+      .normalizeEmail(),
     check("password", "Password is not convenient for login")
       .isLength({ min: 5 })
-      .isAlphanumeric(),
+      .isAlphanumeric()
+      .trim(),
   ],
   authController.postLogin
 );
@@ -39,16 +43,20 @@ router.post(
             );
           }
         });
-      }),
+      })
+      .normalizeEmail(),
     body("password", "Please enter alfhanumeric and at least 5 characters")
       .isLength({ min: 5 })
-      .isAlphanumeric(),
-    body("confirmPassword").custom((value, { req }) => {
-      if (value !== req.body.password) {
-        throw new Error("Dont macth password");
-      }
-      return true;
-    }),
+      .isAlphanumeric()
+      .trim(),
+    body("confirmPassword")
+      .custom((value, { req }) => {
+        if (value !== req.body.password) {
+          throw new Error("Dont macth password");
+        }
+        return true;
+      })
+      .trim(),
   ],
   authController.postSignup
 );
