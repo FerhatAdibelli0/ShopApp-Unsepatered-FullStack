@@ -2,6 +2,8 @@ const { redirect } = require("express/lib/response");
 const Product = require("../models/product");
 const User = require("../models/users");
 const Order = require("../models/order");
+const fs = require("fs");
+const path = require("path");
 
 exports.getProducts = (req, res, next) => {
   Product.find()
@@ -253,4 +255,23 @@ exports.getOrders = (req, res, next) => {
       const error = new Error(err);
       return next(error);
     });
+};
+
+exports.getInvoice = (req, res, next) => {
+  const orderId = req.params.orderId;
+  const invoiceId = "invoice-" + orderId + ".pdf";
+  const invoicePath = path.join("data", "invoices", invoiceId);
+  fs.readFile(invoicePath, (err, data) => {
+    if (err) {
+      return next(err);
+    }
+
+    res.setHeader("Content-Type", "application/pdf");
+    // res.setHeader("Content-Disposition", "inline;filename='" + invoiceId + "'");
+    res.setHeader(
+      "Content-Disposition",
+      "attachment;filename='" + invoiceId + "'"
+    );
+    res.send(data);
+  });
 };
