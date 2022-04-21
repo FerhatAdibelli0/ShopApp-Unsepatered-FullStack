@@ -6,6 +6,7 @@ const session = require("express-session");
 const mongoDbSession = require("connect-mongodb-session")(session);
 const csrf = require("csurf");
 const flash = require("connect-flash");
+const multer = require("multer");
 
 const errorController = require("./controllers/error");
 
@@ -16,6 +17,7 @@ const authRoutes = require("./routes/auth");
 // const mongoConnect = require("./util/database").mongoConnect;
 const User = require("./models/users");
 const mongoose = require("mongoose");
+const { diskStorage } = require("multer");
 // Creating csrf middleware
 const csrfProtection = csrf();
 
@@ -36,10 +38,21 @@ const store = new mongoDbSession({
   collection: "sessions",
 });
 
+const fileStorage = diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "images");
+  },
+  filename: (req, file, cb) => {
+    cb(null, file.filename + "-" + file.originalname);
+  },
+});
+
 app.set("view engine", "ejs");
 app.set("views", "views");
 
 app.use(bodyParser.urlencoded({ extended: false }));
+app.use(multer({ storage: fileStorage }).single("image"));
+
 app.use(express.static(path.join(__dirname, "public")));
 app.use(
   session({
