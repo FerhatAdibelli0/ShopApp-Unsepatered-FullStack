@@ -1,5 +1,6 @@
 const Product = require("../models/product");
 const { validationResult } = require("express-validator");
+const helperFunction = require("../util/file");
 
 exports.getAddProduct = (req, res, next) => {
   // PROTECTED ROUTES BUT THAT IS CUMBERSOME,USE MİDDLEWARE
@@ -164,6 +165,7 @@ exports.postEditProduct = (req, res, next) => {
       product.title = updatedTitle;
       product.price = updatedPrice;
       if (image) {
+        helperFunction.deleteFile(product.imageUrl);
         product.imageUrl = image.path;
       }
       product.description = updatedDesc;
@@ -205,12 +207,14 @@ exports.postEditProduct = (req, res, next) => {
 
 exports.postDeleteProduct = (req, res, next) => {
   const prodId = req.body.productId;
-  // Product.findByPk(prodId)
-  // Product.findByIdAndRemove(prodId) this is also used in mongoDb
-  Product.deleteOne({ _id: prodId, userId: req.user._id })
-    // .then((product) => {
-    //   return product.destroy();
-    // })
+  Product.findById(prodId)
+    .then((product) => {
+      if (!product) {
+        return next(new Error("Product is not found"));
+      }
+      helperFunction.deleteFile(product.imageUrl);
+      return Product.deleteOne({ _id: prodId, userId: req.user._id });
+    })
     .then((result) => {
       res.redirect("/admin/products");
     })
@@ -218,6 +222,13 @@ exports.postDeleteProduct = (req, res, next) => {
       const error = new Error(err);
       return next(error);
     });
+
+  // Product.findByPk(prodId)
+  // Product.findByIdAndRemove(prodId) this is also used in mongoDb
+
+  // .then((product) => {
+  //   return product.destroy();
+  // })
 };
 
 exports.getProducts = (req, res, next) => {
