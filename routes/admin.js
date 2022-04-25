@@ -38,6 +38,8 @@ router.post(
 // // /admin/products => GET
 router.get("/products", isAuth, adminController.getProducts);
 
-router.post("/delete-product", isAuth, adminController.postDeleteProduct);
+// router.post("/delete-product", isAuth, adminController.postDeleteProduct); // Without Async Request
+
+router.delete("/product/:productId", isAuth, adminController.deleteProduct); // With Async Request
 
 module.exports = router;

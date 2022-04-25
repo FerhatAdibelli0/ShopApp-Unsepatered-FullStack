@@ -205,8 +205,38 @@ exports.postEditProduct = (req, res, next) => {
   // updatedProduct.save();
 };
 
-exports.postDeleteProduct = (req, res, next) => {
-  const prodId = req.body.productId;
+// WITHOUT ASYNC REQ.
+
+// exports.postDeleteProduct = (req, res, next) => {
+//   const prodId = req.body.productId;
+//   Product.findById(prodId)
+//     .then((product) => {
+//       if (!product) {
+//         return next(new Error("Product is not found"));
+//       }
+//       helperFunction.deleteFile(product.imageUrl);
+//       return Product.deleteOne({ _id: prodId, userId: req.user._id });
+//     })
+//     .then((result) => {
+//       res.redirect("/admin/products");
+//     })
+//     .catch((err) => {
+//       const error = new Error(err);
+//       return next(error);
+//     });
+
+// Product.findByPk(prodId)
+// Product.findByIdAndRemove(prodId) this is also used in mongoDb
+
+// .then((product) => {
+//   return product.destroy();
+// })
+// };
+
+// WITH ASYNC REQ.
+
+exports.deleteProduct = (req, res, next) => {
+  const prodId = req.params.productId;
   Product.findById(prodId)
     .then((product) => {
       if (!product) {
@@ -216,11 +246,10 @@ exports.postDeleteProduct = (req, res, next) => {
       return Product.deleteOne({ _id: prodId, userId: req.user._id });
     })
     .then((result) => {
-      res.redirect("/admin/products");
+      res.status(200).json({ message: "Deleted successfully" });
     })
     .catch((err) => {
-      const error = new Error(err);
-      return next(error);
+      res.status(500).json({ message: "Deteled is failed" });
     });
 
   // Product.findByPk(prodId)

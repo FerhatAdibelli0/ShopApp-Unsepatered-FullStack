@@ -5,14 +5,38 @@ const Order = require("../models/order");
 const fs = require("fs");
 const path = require("path");
 const PDFDocument = require("pdfkit");
+const { errorMonitor } = require("stream");
+const stripe = require("stripe")(
+  "sk_test_51KsTFdDUYVdahe16knLkU0tJ7k7tR8Nwmgw1bAlqyY762cZ5g4GY5e72JLTehNl483oK1QytJ4Qa2Y9cbX5MwYcw00IdP47Bbb"
+);
+
+const ITEM_PER_PAGE = 1;
 
 exports.getProducts = (req, res, next) => {
+  const page = +req.query.page || 1;
+  let totalItems;
+
   Product.find()
+    .countDocuments()
+    .then((prodNumber) => {
+      totalItems = prodNumber;
+      return Product.find()
+        .skip((page - 1) * ITEM_PER_PAGE)
+        .limit(ITEM_PER_PAGE);
+    })
     .then((products) => {
       res.render("shop/product-list", {
         prods: products,
-        pageTitle: "All Products",
+        pageTitle: "Products",
         path: "/products",
+        currentPage: page,
+        hasNextPage: page * ITEM_PER_PAGE < totalItems,
+        hasPreviousPage: page > 1,
+        nextPage: page + 1,
+        previousPage: page - 1,
+        lastPage: Math.ceil(totalItems / ITEM_PER_PAGE),
+        // isAuthenticated: req.session.isLoggedIn,
+        // csrfToken: req.csrfToken(),
       });
     })
     .catch((err) => {
@@ -22,12 +46,28 @@ exports.getProducts = (req, res, next) => {
 };
 
 exports.getIndex = (req, res, next) => {
+  const page = +req.query.page || 1;
+  let totalItems;
+
   Product.find()
+    .countDocuments()
+    .then((prodNumber) => {
+      totalItems = prodNumber;
+      return Product.find()
+        .skip((page - 1) * ITEM_PER_PAGE)
+        .limit(ITEM_PER_PAGE);
+    })
     .then((products) => {
       res.render("shop/index", {
         prods: products,
         pageTitle: "Shop",
         path: "/",
+        currentPage: page,
+        hasNextPage: page * ITEM_PER_PAGE < totalItems,
+        hasPreviousPage: page > 1,
+        nextPage: page + 1,
+        previousPage: page - 1,
+        lastPage: Math.ceil(totalItems / ITEM_PER_PAGE),
         // isAuthenticated: req.session.isLoggedIn,
         // csrfToken: req.csrfToken(),
       });
@@ -117,6 +157,73 @@ exports.getCart = (req, res, next) => {
   //  });
 };
 
+exports.getCheckout = (req, res, next) => {
+  let products;
+  let total = 0;
+  req.user
+    .populate("cart.items.productId")
+    .then((user) => {
+      products = user.cart.items;
+      products.forEach((p) => {
+        total += p.quantity * p.productId.price;
+      });
+      return stripe.checkout.sessions.create({
+        payment_method_types: ["card"],
+        line_items: products.map((p) => {
+          return {
+            name: p.productId.title,
+            description: p.productId.description,
+            amount: p.productId.price * 100,
+            currency: "usd",
+            quantity: p.quantity,
+          };
+        }),
+        success_url:
+          req.protocol + "://" + req.get("host") + "/checkout/success",
+        cancel_url: req.protocol + "://" + req.get("host") + "/checkout/cancel",
+      });
+    })
+    .then((session) => {
+      res.render("shop/checkout", {
+        path: "/checkout",
+        pageTitle: "Checkout",
+        products: products,
+        totalSum: total,
+        sessionId: session.id,
+      });
+    })
+    .catch((err) => {
+      const error = new Error(err);
+      return next(error);
+    });
+};
+
+exports.getCheckoutSuccess = (req, res, next) => {
+  req.user
+    .populate("cart.items.productId")
+    .then((user) => {
+      const products = user.cart.items.map((i) => {
+        return { quantity: i.quantity, product: i.productId._doc };
+      });
+
+      const order = new Order({
+        products: products,
+        user: { email: req.user.email, userId: req.user },
+      });
+      return order.save();
+    })
+    .then((result) => {
+      return req.user.clearCart();
+    })
+    .then(() => {
+      res.redirect("/orders");
+    })
+    .catch((err) => {
+      const error = new Error(err);
+      return next(error);
+    });
+};
+
 exports.postCart = (req, res, next) => {
   const prodId = req.body.productId;
   Product.findById(prodId)
@@ -188,60 +295,60 @@ exports.deleteCartProduct = (req, res, next) => {
     });
 };
 
-exports.orderCart = (req, res, next) => {
-  req.user
-    .populate("cart.items.productId")
-    .then((user) => {
-      const products = user.cart.items.map((i) => {
-        return { quantity: i.quantity, product: i.productId._doc };
-      });
+// exports.orderCart = (req, res, next) => {
+//   req.user
+//     .populate("cart.items.productId")
+//     .then((user) => {
+//       const products = user.cart.items.map((i) => {
+//         return { quantity: i.quantity, product: i.productId._doc };
+//       });
 
-      const order = new Order({
-        products: products,
-        user: { email: req.user.email, userId: req.user },
-      });
-      return order.save();
-    })
-    .then((result) => {
-      return req.user.clearCart();
-      //   fetchedCart = cart;
-      //   return cart
-      //     .getProducts()
-      //     .then((products) => {
-      //       return req.user
-      //         .createOrder()
-      //         .then((order) => {
-      //           return order.addProducts(
-      //             products.map((product) => {
-      //               product.orderItem = {
-      //                 quantity: product.cartItem.quantity,
-      //               };
-      //               return product;
-      //             })
-      //           );
-      //         })
-      //         .then((result) => {
-      //           return fetchedCart.setProducts(null);
-      //         })
-      //         .then((result) => {
-      //           res.redirect("/orders");
-      //         })
-      //         .catch((err) => {
-      //           console.log(err);
-      //         });
-      //     })
-      //     .catch((err) => {
-      //       console.log(err);
-      //     });
-    })
-    .then(() => {
-      res.redirect("/orders");
-    })
-    .catch((err) => {
-      const error = new Error(err);
-      return next(error);
-    });
-};
+//       const order = new Order({
+//         products: products,
+//         user: { email: req.user.email, userId: req.user },
+//       });
+//       return order.save();
+//     })
+//     .then((result) => {
+//       return req.user.clearCart();
+//       //   fetchedCart = cart;
+//       //   return cart
+//       //     .getProducts()
+//       //     .then((products) => {
+//       //       return req.user
+//       //         .createOrder()
+//       //         .then((order) => {
+//       //           return order.addProducts(
+//       //             products.map((product) => {
+//       //               product.orderItem = {
+//       //                 quantity: product.cartItem.quantity,
+//       //               };
+//       //               return product;
+//       //             })
+//       //           );
+//       //         })
+//       //         .then((result) => {
+//       //           return fetchedCart.setProducts(null);
+//       //         })
+//       //         .then((result) => {
+//       //           res.redirect("/orders");
+//       //         })
+//       //         .catch((err) => {
+//       //           console.log(err);
+//       //         });
+//       //     })
+//       //     .catch((err) => {
+//       //       console.log(err);
+//       //     });
+//     })
+//     .then(() => {
+//       res.redirect("/orders");
+//     })
+//     .catch((err) => {
+//       const error = new Error(err);
+//       return next(error);
+//     });
+// };
 
 exports.getOrders = (req, res, next) => {
   Order.find({ "user.userId": req.user._id })
@@ -298,7 +405,7 @@ exports.getInvoice = (req, res, next) => {
             prod.product.price
         );
       });
-      pdfDoc.fontSDize(15).text("Total Price" + totalPrice);
+      pdfDoc.fontSize(15).text("Total Price" + totalPrice);
 
       pdfDoc.end();
 
