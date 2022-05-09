@@ -29,8 +29,7 @@ const csrfProtection = csrf();
 // const Order = require("./models/order");
 // const OrderItem = require("./models/orderItem");
 
-const MONGO_URI =
-  "mongodb+srv://maxpayne35:qGBr7naSXYmEYnw@cluster0.sp51h.mongodb.net/shop?retryWrites=true&w=majority";
+const MONGO_URI = `mongodb+srv://${process.env.MONGO_USERNAME}:${process.env.MONGO_PASSWORD}@cluster0.sp51h.mongodb.net/${process.env.MONGO_DATABASE}?retryWrites=true&w=majority`;
 
 const app = express();
 const store = new mongoDbSession({
@@ -178,7 +177,7 @@ app.use((error, req, res, next) => {
 mongoose
   .connect(MONGO_URI)
   .then((result) => {
-    app.listen(3000);
+    app.listen(process.env.PORT || 3000);
     console.log("Connected with mongoose");
   })
   .catch((err) => {

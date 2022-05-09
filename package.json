@@ -5,8 +5,9 @@
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon app.js",
-    "start-server": "node app.js"
+   "start": "SET NODE_ENV=production&&SET MONGO_USERNAME=maxpayne35&&SET MONGO_PASSWORD=qGBr7naSXYmEYnw&&SET MONGO_DATABASE=shop&&SET STRIPE_KEY=sk_test_51KsTFdDUYVdahe16knLkU0tJ7k7tR8Nwmgw1bAlqyY762cZ5g4GY5e72JLTehNl483oK1QytJ4Qa2Y9cbX5MwYcw00IdP47Bbb&&node app.js",
+    "start-server": "node app.js",
+    "start:dev": "nodemon app.js"
   },
   "author": "Maximilian Schwarzmüller",
   "license": "ISC",
