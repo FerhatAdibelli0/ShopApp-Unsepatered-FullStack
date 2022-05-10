@@ -1,12 +1,15 @@
 const express = require("express");
-
 const path = require("path");
+const fs = require("fs");
 const bodyParser = require("body-parser");
 const session = require("express-session");
 const mongoDbSession = require("connect-mongodb-session")(session);
 const csrf = require("csurf");
 const flash = require("connect-flash");
 const multer = require("multer");
+const helmet = require("helmet");
+const compression = require("compression");
+const morgan = require("morgan");
 
 const errorController = require("./controllers/error");
 
@@ -71,6 +74,15 @@ app.use(
 
 app.use(express.static(path.join(__dirname, "public")));
 app.use("/images", express.static(path.join(__dirname, "images")));
+
+const accessLogStream = fs.createWriteStream(
+  path.join(__dirname, "access.log"),
+  { flags: "a" }
+);
+
+app.use(helmet()); // Setting secure response Headers
+app.use(compression()); // Compressing assets
+app.use(morgan("combined", { stream: accessLogStream })); // Setting up request logging
 
 app.use(
   session({
