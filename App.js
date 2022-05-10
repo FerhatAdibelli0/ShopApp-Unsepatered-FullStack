@@ -10,6 +10,7 @@ const multer = require("multer");
 const helmet = require("helmet");
 const compression = require("compression");
 const morgan = require("morgan");
+const https = require("https");
 
 const errorController = require("./controllers/error");
 
@@ -63,6 +64,9 @@ const fileFilter = (req, file, cb) => {
     cb(null, false);
   }
 };
+
+const privateKey = fs.readFileSync("server.key");
+const certificate = fs.readFileSync("server.cert");
 
 app.set("view engine", "ejs");
 app.set("views", "views");
@@ -189,7 +193,9 @@ app.use((error, req, res, next) => {
 mongoose
   .connect(MONGO_URI)
   .then((result) => {
-    app.listen(process.env.PORT || 3000);
+    https
+      .createServer({ key: privateKey, cert: certificate }, app)
+      .listen(process.env.PORT || 3000);
     console.log("Connected with mongoose");
   })
   .catch((err) => {
